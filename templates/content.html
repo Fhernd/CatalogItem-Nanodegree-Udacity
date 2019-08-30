@@ -1,0 +1,62 @@
+{% extends "main.html" %}
+{% block content %}
+
+<!-- Sidebar -->
+<div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="sidebar-heading">Categories </div>
+    <div class="list-group list-group-flush">
+        {% for category in categories %}
+        <a href="{{url_for('show_category_items', category_id = category.id )}}"
+            class="list-group-item list-group-item-action bg-light">{{category.name}}</a>
+        {% endfor %}
+    </div>
+</div>
+<!-- /#sidebar-wrapper -->
+
+<!-- Page Content -->
+<div id="page-content-wrapper">
+
+    {% include "navigation.html" %}
+
+    <div class="container-fluid">
+        <h1 class="mt-4">Items</h1>
+
+        <table class="table table-striped custab">
+            <thead>
+                {% if user %}
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createItemModal">+
+                    Item</button>
+                {% endif %}
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    {% if user %}
+                    <th class="text-center">Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            {% for item in items %}
+            <tr>
+                <td><a href="" data-toggle="modal" data-target="#viewItemModal" data-title="{{item.title}}"
+                        data-description="{{item.description}}"
+                        data-category="{{item.category.name}}">{{item.title}}</a></td>
+                <td>{{item.category.name}}</td>
+                {% if user %}
+                <td class="text-center">
+                    {% if item.user.email == user.email %}
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#editItemModal"
+                        data-itemid={{item.id}} data-title="{{item.title}}" data-description="{{item.description}}"
+                        data-categoryid="{{item.category_id}}">Edit</button>
+                    <a href="{{url_for('delete_item', item_id = item.id )}}" class="btn btn-danger btn-xs delete"><span
+                            class="glyphicon glyphicon-remove"></span> Del</a></td>
+                    {% endif %}
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% include "new_item_modal.html" %}
+{% include "edit_item_modal.html" %}
+{% include "view_item_modal.html" %}
+{% endblock %}
